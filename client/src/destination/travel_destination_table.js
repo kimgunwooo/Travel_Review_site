@@ -13,6 +13,8 @@ import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
 
 
 
@@ -23,6 +25,9 @@ const EXPRESS_URL = 'https://travel-review.run.goorm.site'
 
 function TravelDestinationTable() {
   const [items, setItems] = useState([])
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const navigate = useNavigate();
+  
   useEffect(() => {
     refresh()
   }, [])
@@ -32,25 +37,34 @@ function TravelDestinationTable() {
     console.log(res.data)
     setItems(res.data)
   }
-  
-  //사이트 이동
-  const navigate = useNavigate();
-  function goToReviews(destinationId) {
-    navigate(`/destination/review/${destinationId}`);
+  function goToReviews(destinationId) { //리뷰 페이지
+    navigate(`/destination/${destinationId}/review`);
   }
-  function goToAdd() {
+  function goToAdd() { //추가
     navigate('/destination/add');
   }
-  function handleUpdateClick(event, id) {
+  function handleUpdateClick(event, id) { //수정
     event.stopPropagation(); //이벤트 버블링 방지
-    navigate(`/destination/edit/${id}`);
+    navigate(`/destination/${id}/edit`);
   }
-  async function handleDeleteClick(event,id) {
+  async function handleDeleteClick(event,id) { //삭제
     event.stopPropagation();
     await axios.delete(`${EXPRESS_URL}/destination/${id}`);
     refresh();
   }
-  
+  function handleSearchClick() { //검색
+    if (searchKeyword.trim() === '') {
+      refresh();
+    } else {
+      const filteredItems = items.filter( 
+        (item) => //여행지, 국가, 지역 필드에서 검색어에 해당하는 값을 찾음.
+          item.name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+          item.country.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+          item.region.toLowerCase().includes(searchKeyword.toLowerCase())
+      );
+      setItems(filteredItems);
+    }
+  }
   
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
@@ -73,17 +87,32 @@ function TravelDestinationTable() {
         onClick={() => { goToAdd() }}>
         <AddIcon />
       </Fab>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, margin: 2 }}>
+        <TextField
+          id="search"
+          label="검색어를 입력하세요"
+          type="search"
+          variant="outlined"
+          size="small"
+          value={searchKeyword}
+          onChange={(e) => setSearchKeyword(e.target.value)}
+        />
+        <Button variant="contained" onClick={() => handleSearchClick()}>
+          검색
+        </Button>
+      </Box>
       <TableContainer sx={{ maxHeight: 545 }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
-              <TableCell>리스트</TableCell>
+              <TableCell>번호</TableCell>
               <TableCell>여행지</TableCell>
               <TableCell>국가</TableCell>
               <TableCell>지역</TableCell>
               <TableCell>설명</TableCell>
               <TableCell>이미지</TableCell>
-              <TableCell>수정/삭제</TableCell>
+              <TableCell>수정</TableCell>
+              <TableCell>삭제</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -100,6 +129,8 @@ function TravelDestinationTable() {
                 }
                 <TableCell>
                   <Button color="primary" onClick={(event) => handleUpdateClick(event,destination.destination_id)}>수정</Button>
+                </TableCell>
+                <TableCell>
                   <Button color="secondary" onClick={(event) => handleDeleteClick(event,destination.destination_id)}>삭제</Button>
                 </TableCell>
                 </TableRow>) }

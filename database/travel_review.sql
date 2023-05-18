@@ -11,7 +11,7 @@ CREATE TABLE member_info (
   member_id INT NOT NULL AUTO_INCREMENT,
   name VARCHAR(45) NOT NULL,
   email VARCHAR(45) NOT NULL,
-  member_password VARCHAR(45) NOT NULL,
+  age VARCHAR(45) NOT NULL,
   profile_image VARCHAR(255),
   PRIMARY KEY (member_id)
 ) ENGINE = InnoDB
@@ -71,27 +71,33 @@ show tables;
 desc member_info;
 
 -- 회원 정보 20명 생성
-INSERT INTO member_info (name, email, member_password) VALUES 
-("김건우", "kwforu123@naver.com", "****"),
-("박지성", "jspark@naver.com", "****"),
-("홍길동", "honggd@naver.com", "****"),
-("이순신", "yisu@naver.com", "****"),
-("장영실", "ysjang@naver.com", "****"),
-("이황", "ih@naver.com", "****"),
-("서태지", "taiji@naver.com", "****"),
-("김태균", "taegeun@naver.com", "****"),
-("이용규", "yonggyu@naver.com", "****"),
-("강호동", "hodong@naver.com", "****"),
-("유재석", "jaeseok@naver.com", "****"),
-("박명수", "myeongsu@naver.com", "****"),
-("정준하", "junha@naver.com", "****"),
-("노홍철", "hongcheol@naver.com", "****"),
-("김국진", "gukjin@naver.com", "****"),
-("양세형", "sehyeong@naver.com", "****"),
-("이광수", "kwangs@naver.com", "****"),
-("유인나", "inna@naver.com", "****"),
-("김신영", "shinyoung@naver.com", "****"),
-("김희철", "heechul@naver.com", "****");
+INSERT INTO member_info (name, email, age)
+VALUES
+  ('김건우', 'kwforu123@naver.com', '24'),
+  ('홍길동', 'honggildong@example.com', '25'),
+  ('김영희', 'kimyeonghee@example.com', '30'),
+  ('이철수', 'leecholsu@example.com', '28'),
+  ('박미영', 'parkmiyoung@example.com', '32'),
+  ('정영호', 'jeongyeongho@example.com', '27'),
+  ('이지은', 'leejieun@example.com', '29'),
+  ('박준호', 'parkjunho@example.com', '31'),
+  ('김수진', 'kimsujin@example.com', '26'),
+  ('최민식', 'choiminsik@example.com', '33'),
+  ('한지원', 'hanjiwon@example.com', '28'),
+  ('송승헌', 'songseunghun@example.com', '29'),
+  ('강소라', 'kangsora@example.com', '30'),
+  ('이정재', 'leejeongjae@example.com', '32'),
+  ('전도연', 'jeondoeyeon@example.com', '27'),
+  ('김수현', 'kimsuhyun@example.com', '25'),
+  ('한효주', 'hanhyoju@example.com', '31'),
+  ('조진웅', 'jojinwoong@example.com', '29'),
+  ('한가인', 'hangain@example.com', '26'),
+  ('유해진', 'yuhaejin@example.com', '28'),
+  ('문채원', 'moonchaewon@example.com', '30'),
+  ('김래원', 'kimraewon@example.com', '27'),
+  ('한예슬', 'hanyeseul@example.com', '31'),
+  ('주지훈', 'jujihun@example.com', '32'),
+  ('박보영', 'parkboyoung@example.com', '29');
 select * from member_info;
 
 INSERT INTO travel_destination (name, country, region, description, image)

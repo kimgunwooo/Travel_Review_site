@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -11,6 +11,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Fab from '@mui/material/Fab';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import AddIcon from '@mui/icons-material/Add';
 
 // 3010 포트 도메인
 // URL 맨 뒤에 / (슬래시) 없어야 하므로 주의할 것
@@ -20,11 +21,12 @@ function ReviewList() {
   const { destinationId } = useParams()
   const [destination, setDestination] = useState(null)
   const [reviews, setReviews] = useState([])
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchData() {
       const destinationResponse = await axios.get(`${EXPRESS_URL}/destination/${destinationId}`)
-      const reviewResponse = await axios.get(`${EXPRESS_URL}/destination/review/${destinationId}`)
+      const reviewResponse = await axios.get(`${EXPRESS_URL}/destination/${destinationId}/review`)
       setDestination(destinationResponse.data)
       setReviews(reviewResponse.data || []) // 리뷰가 없는 경우 빈 배열로 초기화
     }
@@ -35,21 +37,36 @@ function ReviewList() {
     if (!destination) {
       return <div>Loading...</div>
     }
-  
+    
+    function goToAdd() { //추가
+      navigate(`/destination/${destinationId}/review/add`);
+    }
+    
     return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
       <h2>여행지 '{destination[0].name}'에 대한 리뷰</h2>
+      <Fab color="primary"
+        sx={{
+          position: "fixed",
+          top: (theme) => theme.spacing(9),
+          right: (theme) => theme.spacing(2)
+        }}
+        onClick={() => { goToAdd() }}>
+        <AddIcon />
+      </Fab>
       <TableContainer sx={{ maxHeight: 545 }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
+              <TableCell>번호</TableCell>
               <TableCell>작성자</TableCell>
-              <TableCell>평점</TableCell>
+              <TableCell>별점</TableCell>
               <TableCell>내용</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             { reviews.map( (review, i) => <TableRow hover role="checkbox" key={i}>
+              <TableCell>{i+1}</TableCell>              
               <TableCell>{review.writer_name}</TableCell>
               <TableCell>{review.rating}</TableCell>
               <TableCell>{review.review_content}</TableCell>

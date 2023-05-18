@@ -21,15 +21,11 @@ function EditTravelDestination() {
   useEffect(() => {
     async function getDestination() {
       const res = await axios.get(`${EXPRESS_URL}/destination/${id}`)
-      console.log(res.data)
-      console.log(res.data.name)
-      console.log(res.data[0].name)
       setName(res.data[0].name)
       setCountry(res.data[0].country)
       setRegion(res.data[0].region)
       setDescription(res.data[0].description)
       setImage(res.data[0].image)
-      
     }
     getDestination();
   }, [id])
