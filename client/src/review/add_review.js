@@ -27,9 +27,9 @@ function AddReview() {
   async function addReview() {
     const destinationId = window.location.pathname.split('/').slice(-3)[0];
     
-    const writerResponse = await axios.get(`${EXPRESS_URL}/member/${writer}`);
+    const writerResponse = await axios.get(`${EXPRESS_URL}/member/${writerId}`);
     console.log(writerResponse.data)
-    if (!writerResponse.data.exists) {
+    if (writerResponse.data.length === 0){
       setShowWriterAlert(true);
       return;
     }
@@ -49,7 +49,7 @@ function AddReview() {
       return;
     }
     
-    const res = await axios.post(`${EXPRESS_URL}/destination/${destinationId}/review`, { writer, rating, body })
+    const res = await axios.post(`${EXPRESS_URL}/destination/${destinationId}/review`, { writer: writerId, rating, body })
     console.log(res.data)
     navigate(`/destination/${destinationId}/review`);
   }

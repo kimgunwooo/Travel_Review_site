@@ -1,12 +1,13 @@
 import './App.css'
 import Main from './main/main';
-import TravelDestinationTable from './destination/travel_destination_table'
+import TravelDestinationTable from './destination/destination'
 import ReviewList from './review/review_list'
 import AddTravelDestination from './destination/add_destination'
 import EditTravelDestination from './destination/edit_destination'
 import AddReview from './review/add_review'
 import AddMember from './member/add_member'
 import MemberList from './member/member'
+import EditMember from './member/edit_member'
 
 import { BrowserRouter, Routes,Route } from 'react-router-dom';
 
@@ -24,6 +25,7 @@ const App = () => {
           <Route exact path="/destination/:id/review/add" element={<AddReview/>} />
           <Route exact path="/member/add" element={<AddMember/>}/>
           <Route exact path="/member" element={<MemberList/>}/>
+          <Route exact path="/member/:id/edit" element={<EditMember/>}/>
         </Routes>
       </div>
     </BrowserRouter>

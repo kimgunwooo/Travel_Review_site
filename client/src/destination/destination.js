@@ -15,6 +15,8 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 
 
 
@@ -27,6 +29,7 @@ function TravelDestinationTable() {
   const [items, setItems] = useState([])
   const [searchKeyword, setSearchKeyword] = useState('');
   const navigate = useNavigate();
+  const [selectedItem, setSelectedItem] = useState('');
   
   useEffect(() => {
     refresh()
@@ -62,7 +65,26 @@ function TravelDestinationTable() {
           item.country.toLowerCase().includes(searchKeyword.toLowerCase()) ||
           item.region.toLowerCase().includes(searchKeyword.toLowerCase())
       );
+      
+      if (selectedItem !== '') {
+      filteredItems = filteredItems.filter(
+        (item) => item.someProperty === selectedItem // Replace someProperty with the actual property you want to filter by
+      );
+    }
       setItems(filteredItems);
+    }
+  }
+  
+  function handleDropdownChange(event) {
+    const selectedValue = event.target.value;
+    setSelectedItem(selectedValue);
+    
+    if (selectedValue === 'option1') {//최신순
+      refresh();
+    }
+    else if (selectedValue === 'option2') {//평점순
+      const sortedItems = [...items].sort((a, b) => b.average_rating - a.average_rating);
+      setItems(sortedItems);
     }
   }
   
@@ -100,6 +122,17 @@ function TravelDestinationTable() {
         <Button variant="contained" onClick={() => handleSearchClick()}>
           검색
         </Button>
+        <Select
+          value={selectedItem}
+          onChange={(e) => handleDropdownChange(e)}
+          variant="outlined"
+          size="small"
+        >
+          <MenuItem value="">정렬</MenuItem>
+          <MenuItem value="option1">최신순</MenuItem>
+          <MenuItem value="option2">평점순</MenuItem>
+          {/* Add more MenuItems as needed */}
+        </Select>
       </Box>
       <TableContainer sx={{ maxHeight: 545 }}>
         <Table stickyHeader aria-label="sticky table">
@@ -110,6 +143,7 @@ function TravelDestinationTable() {
               <TableCell>국가</TableCell>
               <TableCell>지역</TableCell>
               <TableCell>설명</TableCell>
+              <TableCell>평점(평균)</TableCell>
               <TableCell>이미지</TableCell>
               <TableCell>수정</TableCell>
               <TableCell>삭제</TableCell>
@@ -122,6 +156,7 @@ function TravelDestinationTable() {
                 <TableCell>{destination.country}</TableCell>
                 <TableCell>{destination.region}</TableCell>
                 <TableCell>{destination.description}</TableCell>
+                <TableCell>{destination.average_rating}</TableCell>
                 { 
                   destination.image == '' 
                   ? <TableCell/>

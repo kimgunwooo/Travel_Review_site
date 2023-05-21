@@ -21,9 +21,13 @@ app.get('/', (req, res) => {
   res.json({result: "success"})
 })
 
-//모든 여행지 목록
+//모든 여행지 목록 + 평균 평점
 app.get('/destination', (req, res) => { 
-  const sql = 'select * from travel_destination'
+  const sql = '\
+  SELECT travel_destination.*,AVG(review.rating) AS average_rating\
+    FROM travel_destination\
+    LEFT JOIN review ON travel_destination.destination_id = review.destination_id\
+    GROUP BY travel_destination.destination_id;'
 	db.query(sql, (err, rows) => {
 		if (err) {
 			res.json({result: "error"})
@@ -32,6 +36,8 @@ app.get('/destination', (req, res) => {
 		res.json(rows)
 	})
 })
+
+
 
 //여행지 검색
 app.get('/destination/:id',(req,res)=>{
@@ -103,7 +109,7 @@ app.delete('/destination/:id', (req, res) => {
 })
 
 //모든 리뷰 목록
-app.get('/destination/review', (req, res) => { 
+  app.get('/destination/review', (req, res) => { 
   const sql = 'select * from review'
 	db.query(sql, (err, rows) => {
 		if (err) {
@@ -167,17 +173,18 @@ app.post('/destination/:id/review', (req, res) => {
 });
 
 //멤버 찾기
-app.get('/member/:name', (req, res) => {
-  const name = req.params.name
-  const sql = 'select * from member_info WHERE name=?'
-	db.query(sql,[name], (err, rows) => {
-		if (err) {
-			res.json({result: "error"})
-			return console.log(err)
-		}
-		res.json(rows)
-	})
-})
+app.get('/member/:id', (req, res) => {
+  const id = req.params.id;
+  const sql = 'SELECT * FROM member_info WHERE member_id = ?';
+
+  db.query(sql, [id], (err, rows) => {
+    if (err) {
+      res.json({ result: 'error' });
+      return console.log(err);
+    }
+    res.json(rows);
+  });
+});
 
 //모든 멤버 찾기
 app.get('/member', (req, res) => {
@@ -193,22 +200,82 @@ app.get('/member', (req, res) => {
 
 //멤버 추가
 app.post('/member', (req, res) => {
-	const sql = 'insert into member_info (name, email, age, profile_image) values (?)'
-	const member = [
-		req.body.name,
-		req.body.email,
-		req.body.age,
-    req.body.profile_image
-	]
+  const name = req.body.name;
+  const email = req.body.email;
+  
+  //이름 존재 여부, 중복 체크
+  const checkNameQuery = 'SELECT * FROM member_info WHERE name = ?';
+  db.query(checkNameQuery, [name], (err, nameRows) => {
+    if (err) {
+      console.error(err);
+      return res.json({ result: 'error' });
+    }
 
-  db.query(sql, [ member ], (err, rows) => {
-		if (err) {
-			res.json({result: "error"})
-			return console.log(err)
-		}
-		res.json({result: "success"})
-	})
-})
+    if (nameRows.length > 0) {
+      return res.json({ result: 'error', message: 'Member name already exists' });
+    }
+    
+    //이메일 존재 여부, 중복 체크
+    const checkEmailQuery = 'SELECT * FROM member_info WHERE email = ?';
+    db.query(checkEmailQuery, [email], (err, emailRows) => {
+      if (err) {
+        console.error(err);
+        return res.json({ result: 'error' });
+      }
+
+      if (emailRows.length > 0) {
+        return res.json({ result: 'error', message: 'Email already exists' });
+      }
+
+      const insertQuery = 'INSERT INTO member_info (name, email, age, profile_image) VALUES (?, ?, ?, ?)';
+      const member = [name, email, req.body.age, req.body.profile_image];
+
+      db.query(insertQuery, member, (err, rows) => {
+        if (err) {
+          console.error(err);
+          return res.json({ result: 'error' });
+        }
+
+        res.json({ result: 'success' });
+      });
+    });
+  });
+});
+
+//멤버 수정
+app.put('/member/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  const sql = 'UPDATE member_info SET name=?, email=?, age=?, profile_image=? WHERE member_id=?';
+  const member = [
+    req.body.name,
+    req.body.email,
+    req.body.age,
+    req.body.profile_image,
+    id
+  ];
+
+  db.query(sql, member, (err, rows) => {
+    if (err) {
+      res.json({ result: "error" });
+      return console.log(err);
+    }
+    res.json({ result: "success" });
+  });
+});
+
+//멤버 삭제
+app.delete('/member/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  const sql = 'DELETE FROM member_info WHERE member_id = ?';
+
+  db.query(sql, [id], (err, rows) => {
+    if (err) {
+      res.json({ result: 'error' });
+      return console.log(err);
+    }
+    res.json({ result: 'success' });
+  });
+});
 
 app.listen(port, () => {
   console.log(`서버 실행됨 (port ${port})`)

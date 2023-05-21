@@ -1,52 +1,42 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
-import Alert from '@mui/material/Alert';
 
 const EXPRESS_URL = 'https://travel-review.run.goorm.site';
 
-function AddMember() {
+function EditMember() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [age, setAge] = useState('');
   const [profileImage, setProfileImage] = useState('');
-  const [showAlert, setShowAlert] = useState(false);
+  const { id } = useParams();
   const navigate = useNavigate();
 
-  async function addMember() {
-    const writerResponse = await axios.get(`${EXPRESS_URL}/member/${name}`);
-    console.log(writerResponse.data)
-    if (writerResponse.data.length > 0){
-      setShowAlert(true);
-      return;
+  useEffect(() => {
+    async function getMember() {
+      const res = await axios.get(`${EXPRESS_URL}/member/${id}`);
+      setName(res.data[0].name);
+      setEmail(res.data[0].email);
+      setAge(res.data[0].age);
+      setProfileImage(res.data[0].profile_image);
     }
-    try {
-      const res = await axios.post(EXPRESS_URL + '/member', {
-        name,
-        email,
-        age,
-        profile_image: profileImage
-      });
-      console.log(res.data);
-      navigate(`/member`);
-    } catch (error) {
-      console.error(error);
-    }
+    getMember();
+  }, [id]);
+
+  async function updateMember() {
+    const res = await axios.put(`${EXPRESS_URL}/member/${id}`, { name, email, age, profile_image: profileImage });
+    console.log(res.data);
+    navigate('/member');
   }
 
   return (
     <Box sx={{ maxWidth: 600, mx: 'auto', my: 4 }}>
-      <h2>멤버 추가</h2>
-      {showAlert && (
-        <Alert severity="error" onClose={() => setShowAlert(false)}>
-          멤버 이름 또는 이메일이 이미 존재합니다.
-        </Alert>
-      )}
+      <h2>멤버 정보 수정</h2>
       <Stack spacing={2} sx={{ mb: 2 }}>
         <TextField
           fullWidth
@@ -76,12 +66,12 @@ function AddMember() {
           value={profileImage}
           onChange={(e) => setProfileImage(e.target.value)}
         />
-        <Button variant="contained" onClick={addMember}>
-          추가
+        <Button variant="contained" onClick={updateMember}>
+          수정
         </Button>
       </Stack>
     </Box>
   );
 }
 
-export default AddMember;
+export default EditMember;
