@@ -161,22 +161,22 @@ INSERT INTO review
 (2, 18, 5, "이 곳을 사랑합니다!"); -- I love this place!
 
 
-select * from travel_destination;
+# select * from travel_destination;
 
-SELECT r.review_id, r.destination_id,t.name, m.name AS writer_name, r.rating, r.review_content
-FROM review r
-JOIN member_info m ON r.writer_id = m.member_id
-JOIN travel_destination t ON r.destination_id = t.destination_id;
+# SELECT r.review_id, r.destination_id,t.name, m.name AS writer_name, r.rating, r.review_content
+# FROM review r
+# JOIN member_info m ON r.writer_id = m.member_id
+# JOIN travel_destination t ON r.destination_id = t.destination_id;
 
 
-SELECT 
-  travel_destination.*,
-  AVG(review.rating) AS average_rating
-FROM 
-  travel_destination
-LEFT JOIN 
-  review ON travel_destination.destination_id = review.destination_id
-GROUP BY 
-  travel_destination.destination_id;
+# SELECT 
+#   travel_destination.*,
+#   AVG(review.rating) AS average_rating
+# FROM 
+#   travel_destination
+# LEFT JOIN 
+#   review ON travel_destination.destination_id = review.destination_id
+# GROUP BY 
+#   travel_destination.destination_id;
 
-select * from review;
+# select * from review;
