@@ -83,7 +83,7 @@ function TravelDestinationTable() {
       refresh();
     }
     else if (selectedValue === 'option2') {//평점순
-      const sortedItems = [...items].sort((a, b) => b.average_rating - a.average_rating);
+      const sortedItems = [...items].sort((a, b) => a.average_rating - b.average_rating);
       setItems(sortedItems);
     }
   }
@@ -150,7 +150,7 @@ function TravelDestinationTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            { items.map( (destination, i) => <TableRow hover role="checkbox" key={i} onClick={() => goToReviews(destination.destination_id)}>
+            { items.slice(0).reverse().map( (destination, i) => <TableRow hover role="checkbox" key={i} onClick={() => goToReviews(destination.destination_id)}>
                 <TableCell>{i+1}</TableCell>
                 <TableCell>{destination.name}</TableCell>
                 <TableCell>{destination.country}</TableCell>
@@ -160,7 +160,7 @@ function TravelDestinationTable() {
                 { 
                   destination.image == '' 
                   ? <TableCell/>
-                  : <TableCell><img src={process.env.PUBLIC_URL + `/images/${destination.image}.png`} alt='이미지'/></TableCell>
+                  : <TableCell><img src={process.env.PUBLIC_URL + `/images/destination/${destination.image}.jpg`} alt='이미지'/></TableCell>
                 }
                 <TableCell>
                   <Button color="primary" onClick={(event) => handleUpdateClick(event,destination.destination_id)}>수정</Button>

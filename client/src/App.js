@@ -8,6 +8,7 @@ import AddReview from './review/add_review'
 import AddMember from './member/add_member'
 import MemberList from './member/member'
 import EditMember from './member/edit_member'
+import EditReview from './review/edit_review'
 
 import { BrowserRouter, Routes,Route } from 'react-router-dom';
 
@@ -15,7 +16,7 @@ const App = () => {
   return (
     <BrowserRouter>
       <div>
-        <h1>여행 리뷰 블로그</h1>
+        <h1>Before The Trip</h1>
         <Routes>
           <Route exact path="/" element={<Main/>} />
           <Route exact path="/destination" element={<TravelDestinationTable/>} />
@@ -26,6 +27,7 @@ const App = () => {
           <Route exact path="/member/add" element={<AddMember/>}/>
           <Route exact path="/member" element={<MemberList/>}/>
           <Route exact path="/member/:id/edit" element={<EditMember/>}/>
+          <Route exact path="/review/:id/edit" element={<EditReview/>}/>
         </Routes>
       </div>
     </BrowserRouter>

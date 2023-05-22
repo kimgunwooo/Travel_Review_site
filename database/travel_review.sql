@@ -54,51 +54,51 @@ show tables;
 desc member_info;
 
 -- 회원 정보 20명 생성
-INSERT INTO member_info (name, email, age)
+INSERT INTO member_info (name, email, age, profile_image)
 VALUES
-  ('김건우', 'kwforu123@naver.com', '24'),
-  ('홍길동', 'honggildong@example.com', '25'),
-  ('김영희', 'kimyeonghee@example.com', '30'),
-  ('이철수', 'leecholsu@example.com', '28'),
-  ('박미영', 'parkmiyoung@example.com', '32'),
-  ('정영호', 'jeongyeongho@example.com', '27'),
-  ('이지은', 'leejieun@example.com', '29'),
-  ('박준호', 'parkjunho@example.com', '31'),
-  ('김수진', 'kimsujin@example.com', '26'),
-  ('최민식', 'choiminsik@example.com', '33'),
-  ('한지원', 'hanjiwon@example.com', '28'),
-  ('송승헌', 'songseunghun@example.com', '29'),
-  ('강소라', 'kangsora@example.com', '30'),
-  ('이정재', 'leejeongjae@example.com', '32'),
-  ('전도연', 'jeondoeyeon@example.com', '27'),
-  ('김수현', 'kimsuhyun@example.com', '25'),
-  ('한효주', 'hanhyoju@example.com', '31'),
-  ('조진웅', 'jojinwoong@example.com', '29'),
-  ('한가인', 'hangain@example.com', '26'),
-  ('유해진', 'yuhaejin@example.com', '28'),
-  ('문채원', 'moonchaewon@example.com', '30'),
-  ('김래원', 'kimraewon@example.com', '27'),
-  ('한예슬', 'hanyeseul@example.com', '31'),
-  ('주지훈', 'jujihun@example.com', '32'),
-  ('박보영', 'parkboyoung@example.com', '29');
+  ('김건우', 'kwforu123@naver.com', '24', '1'),
+  ('홍길동', 'honggildong@example.com', '25', '2'),
+  ('김영희', 'kimyeonghee@example.com', '30','3'),
+  ('이철수', 'leecholsu@example.com', '28','4'),
+  ('박미영', 'parkmiyoung@example.com', '32','5'),
+  ('정영호', 'jeongyeongho@example.com', '27','6'),
+  ('이지은', 'leejieun@example.com', '29','7'),
+  ('박준호', 'parkjunho@example.com', '31','8'),
+  ('김수진', 'kimsujin@example.com', '26','9'),
+  ('최민식', 'choiminsik@example.com', '33',null),
+  ('한지원', 'hanjiwon@example.com', '28',null),
+  ('송승헌', 'songseunghun@example.com', '29',null),
+  ('강소라', 'kangsora@example.com', '30',null),
+  ('이정재', 'leejeongjae@example.com', '32',null),
+  ('전도연', 'jeondoeyeon@example.com', '27',null),
+  ('김수현', 'kimsuhyun@example.com', '25',null),
+  ('한효주', 'hanhyoju@example.com', '31',null),
+  ('조진웅', 'jojinwoong@example.com', '29',null),
+  ('한가인', 'hangain@example.com', '26',null),
+  ('유해진', 'yuhaejin@example.com', '28',null),
+  ('문채원', 'moonchaewon@example.com', '30',null),
+  ('김래원', 'kimraewon@example.com', '27',null),
+  ('한예슬', 'hanyeseul@example.com', '31',null),
+  ('주지훈', 'jujihun@example.com', '32',null),
+  ('박보영', 'parkboyoung@example.com', '29',null);
 select * from member_info;
 
 INSERT INTO travel_destination (name, country, region, description, image)
 VALUES 
-("괌", "미국", "서태평양", "괌은 미국의 대표적인 해외 자치영토로서, 다양한 해양 스포츠와 관광 명소를 보유하고 있습니다.", "img/guam.jpg"),
-("파리", "프랑스", "유럽", "파리는 모든 사람들이 꿈꾸는 로맨틱한 도시입니다. 에펠탑, 루브르 박물관, 성당 등 대표적인 명소가 많이 있습니다.", "img/paris.jpg"),
-("하와이", "미국", "태평양", "하와이는 아름다운 해변과 섬사이에서 다양한 해양 스포츠를 즐길 수 있는 천국입니다.", "img/hawaii.jpg"),
-("도쿄", "일본", "아시아", "도쿄는 일본의 대표적인 도시로, 전통과 현대성이 조화롭게 어우러져 있습니다.", "img/tokyo.jpg"),
-("방콕", "태국", "아시아", "방콕은 풍부한 문화와 유적, 그리고 다양한 맛집으로 유명한 아시아의 관광도시입니다.", "img/bangkok.jpg"),
-("로마", "이탈리아", "유럽", "로마는 세계적으로 유명한 문화 유산과 역사적인 건축물이 많은 도시입니다.", "img/rome.jpg"),
-("상하이", "중국", "아시아", "상하이는 현대성과 전통이 공존하는 도시로, 유명한 하늘길 등 대표적인 명소가 많습니다.", "img/shanghai.jpg"),
-("뉴욕", "미국", "북미", "뉴욕은 전 세계에서 가장 대표적인 도시 중 하나로, 역사와 문화, 건축 등 모든 면에서 풍부한 자원을 보유하고 있습니다.", "img/newyork.jpg"),
-("캔버스", "캐나다", "북아메리카", "캔버스는 자연과 도시의 조화가 매력적인 도시입니다. 캐나다의 대표적인 도시 중 하나입니다.", "img/canada.jpg"),
-('제주도', '한국', '아시아', '아름다운 자연 풍광과 맛있는 음식, 멋진 관광지가 많은 섬입니다.', 'https://example.com/jeju.jpg'),
-('코타키나발루', '말레이시아', '아시아', '저렴한 가격과 다양한 자연경관, 문화를 느낄 수 있는 도시입니다.', 'https://example.com/kotakinabalu.jpg'),
-('타이페이', '대만', '아시아', '모던하고 오래된 문화가 공존하는 대만의 수도입니다.', 'https://example.com/taipei.jpg'),
-('시드니', '호주', '오세아니아', '국제적인 도시에서의 해변 생활과 볼거리가 많은 도시입니다.', 'https://example.com/sydney.jpg'),
-('런던', '영국', '유럽', '영국의 대표적인 도시 중 하나로, 역사와 문화가 곳곳에 존재합니다.', 'https://example.com/london.jpg');
+("괌", "미국", "서태평양", "괌은 미국의 대표적인 해외 자치영토로서, 다양한 해양 스포츠와 관광 명소를 보유하고 있습니다.", "Guam"),
+("파리", "프랑스", "유럽", "파리는 모든 사람들이 꿈꾸는 로맨틱한 도시입니다. 에펠탑, 루브르 박물관, 성당 등 대표적인 명소가 많이 있습니다.", "Paris"),
+("하와이", "미국", "태평양", "하와이는 아름다운 해변과 섬사이에서 다양한 해양 스포츠를 즐길 수 있는 천국입니다.", "Hawaii"),
+("도쿄", "일본", "아시아", "도쿄는 일본의 대표적인 도시로, 전통과 현대성이 조화롭게 어우러져 있습니다.", "Tokyo"),
+("방콕", "태국", "아시아", "방콕은 풍부한 문화와 유적, 그리고 다양한 맛집으로 유명한 아시아의 관광도시입니다.", "Bangkok"),
+("로마", "이탈리아", "유럽", "로마는 세계적으로 유명한 문화 유산과 역사적인 건축물이 많은 도시입니다.", "Rome"),
+("상하이", "중국", "아시아", "상하이는 현대성과 전통이 공존하는 도시로, 유명한 하늘길 등 대표적인 명소가 많습니다.", "Shanghai"),
+("뉴욕", "미국", "북미", "뉴욕은 전 세계에서 가장 대표적인 도시 중 하나로, 역사와 문화, 건축 등 모든 면에서 풍부한 자원을 보유하고 있습니다.", "NewYork"),
+("토론토", "캐나다", "북아메리카", "토론토는 자연과 도시의 조화가 매력적인 도시입니다. 캐나다의 대표적인 도시 중 하나입니다.", "Toronto"),
+('제주도', '한국', '아시아', '아름다운 자연 풍광과 맛있는 음식, 멋진 관광지가 많은 섬입니다.', 'JejuIsland'),
+('코타키나발루', '말레이시아', '아시아', '저렴한 가격과 다양한 자연경관, 문화를 느낄 수 있는 도시입니다.', 'KotaKinabalu'),
+('타이페이', '대만', '아시아', '모던하고 오래된 문화가 공존하는 대만의 수도입니다.', 'Taipei'),
+('시드니', '호주', '오세아니아', '국제적인 도시에서의 해변 생활과 볼거리가 많은 도시입니다.', 'Sydney'),
+('런던', '영국', '유럽', '영국의 대표적인 도시 중 하나로, 역사와 문화가 곳곳에 존재합니다.', 'London');
 
 INSERT INTO review 
 (destination_id, writer_id, rating, review_content) VALUES 

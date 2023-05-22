@@ -8,7 +8,7 @@ import dbconf from "./conf/auth.js"
 const app = express()
 const port = 3010
 
-// DB 연결
+// DB 연결 - 연결 정보는 auth.js에 저장(보안)
 const db = mysql.createConnection(dbconf)
 db.connect()
 
@@ -109,9 +109,22 @@ app.delete('/destination/:id', (req, res) => {
 })
 
 //모든 리뷰 목록
-  app.get('/destination/review', (req, res) => { 
+app.get('/review', (req, res) => { 
   const sql = 'select * from review'
 	db.query(sql, (err, rows) => {
+		if (err) {
+			res.json({result: "error"})
+			return console.log(err)
+		}
+		res.json(rows)
+	})
+})
+
+//리뷰 검색
+app.get('/review/:id', (req, res) => {
+  const id = parseInt(req.params.id)
+  const sql = 'select * from review where review_id=?'
+	db.query(sql, [id] ,(err, rows) => {
 		if (err) {
 			res.json({result: "error"})
 			return console.log(err)
@@ -136,21 +149,21 @@ app.get('/destination/:id/review',(req,res)=>{
 	})
 })
 
-//해당 여행지의 리뷰 추가
+// 해당 여행지의 리뷰 추가
 app.post('/destination/:id/review', (req, res) => {
-  const id = parseInt(req.params.id)
-  const { writer, rating, body } = req.body;
-  
+  const id = parseInt(req.params.id);
+  const { email, rating, body } = req.body;
+
   console.log(req.body);
-  
+  console.log(email);
   // 작성자의 member_id 가져오기
-  const writerQuery = 'SELECT member_id FROM member_info WHERE name = ?';
-  db.query(writerQuery, [writer], (err, writerResult) => {
+  const writerQuery = 'SELECT member_id FROM member_info WHERE email = ?';
+  
+  db.query(writerQuery, [email], (err, writerResult) => {
     if (err) {
       res.json({ result: 'error' });
       return console.log(err);
     }
-
     if (writerResult.length === 0) {
       res.json({ result: 'error', message: '작성자를 찾을 수 없습니다.' });
       return;
@@ -169,6 +182,41 @@ app.post('/destination/:id/review', (req, res) => {
       }
       res.json({ result: 'success' });
     });
+  });
+});
+
+//리뷰 수정
+app.put('/review/:id', (req, res) => {
+  const reviewId = parseInt(req.params.id);
+  const { rating, reviewContent } = req.body;
+  const sql = 'UPDATE review SET rating = ?, review_content = ? WHERE review_id = ?';
+  const review = [
+    req.body.rating,
+    req.body.review_content,
+    reviewId
+  ]
+  
+  db.query(sql, review, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send('Error updating review');
+    } else {
+      res.status(200).send('Review updated successfully');
+    }
+  });
+});
+
+//리뷰 삭제
+app.delete('/review/:id', (req, res) => {
+  const reviewId = parseInt(req.params.id);
+  const sql = 'DELETE FROM review WHERE review_id = ?';
+  db.query(sql, [reviewId], (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send('Error deleting review');
+    } else {
+      res.status(200).send('Review deleted successfully');
+    }
   });
 });
 

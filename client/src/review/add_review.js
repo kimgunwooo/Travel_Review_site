@@ -15,9 +15,10 @@ const EXPRESS_URL = 'https://travel-review.run.goorm.site'
 
 
 function AddReview() {
-  const [writer, setWriter] = useState('')
+  const [email, setEmail] = useState('');
   const [rating, setRating] = useState('')
   const [body, setBody] = useState('')
+  
   const [showAlert, setShowAlert] = useState(false);
   const [showRatingAlert, setShowRatingAlert] = useState(false);
   const [showBodyAlert, setShowBodyAlert] = useState(false);
@@ -26,14 +27,17 @@ function AddReview() {
   
   async function addReview() {
     const destinationId = window.location.pathname.split('/').slice(-3)[0];
+    const membersResponse = await axios.get(`${EXPRESS_URL}/member`);
+    const members = membersResponse.data;
+
+    const filteredMembers = members.filter((member) => member.email === email);
+    console.log(filteredMembers);
     
-    const writerResponse = await axios.get(`${EXPRESS_URL}/member/${writerId}`);
-    console.log(writerResponse.data)
-    if (writerResponse.data.length === 0){
+    if (filteredMembers.length === 0){
       setShowWriterAlert(true);
       return;
     }
-    if (!writer) {
+    if (!email) {
       setShowAlert(true);
       return;
     }
@@ -49,7 +53,7 @@ function AddReview() {
       return;
     }
     
-    const res = await axios.post(`${EXPRESS_URL}/destination/${destinationId}/review`, { writer: writerId, rating, body })
+    const res = await axios.post(`${EXPRESS_URL}/destination/${destinationId}/review`, { email, rating, body });
     console.log(res.data)
     navigate(`/destination/${destinationId}/review`);
   }
@@ -58,13 +62,13 @@ function AddReview() {
     <Box sx={{ maxWidth: 600, mx: 'auto', my: 4 }}>
       <h2>리뷰 추가</h2>
       {showWriterAlert && (
-        <Alert severity="error" onClose={() => setShowWriterAlert(false)}>작성자 이름이 존재하지 않습니다.</Alert>
+        <Alert severity="error" onClose={() => setShowWriterAlert(false)}>이메일이 존재하지 않습니다.</Alert>
       )}
       <Stack spacing={2} sx={{ mb: 2 }}>
         {showAlert && (
-          <Alert severity="error" onClose={() => setShowAlert(false)}>작성자를 입력해주세요.</Alert>
+          <Alert severity="error" onClose={() => setShowAlert(false)}>이메일을 입력해주세요.</Alert>
         )}
-        <TextField fullWidth label="작성자" variant="outlined" value={writer} onChange={e => setWriter(e.target.value)}/>
+        <TextField fullWidth label="이메일" variant="outlined" value={email} onChange={e => setEmail(e.target.value)}/>
         {showRatingAlert && (
           <Alert severity="error" onClose={() => setShowRatingAlert(false)}>별점은 1부터 5까지 입력해주세요.</Alert>
         )}
