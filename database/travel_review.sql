@@ -12,7 +12,7 @@ CREATE TABLE member_info (
   name VARCHAR(45) NOT NULL,
   email VARCHAR(45) NOT NULL,
   age VARCHAR(45) NOT NULL,
-  profile_image VARCHAR(255),
+  profile_image BLOB,
   PRIMARY KEY (member_id)
 ) ENGINE = InnoDB
   DEFAULT CHARACTER SET utf8 
@@ -25,7 +25,7 @@ CREATE TABLE travel_destination (
   country VARCHAR(45) NOT NULL,
   region VARCHAR(45) NOT NULL,
   description TEXT NOT NULL,
-  image VARCHAR(255),
+  image BLOB,
   PRIMARY KEY (destination_id)
 ) ENGINE = InnoDB
   DEFAULT CHARACTER SET utf8 
