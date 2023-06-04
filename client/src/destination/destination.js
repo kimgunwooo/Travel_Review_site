@@ -37,7 +37,6 @@ function TravelDestinationTable() {
   
   async function refresh() {
     const res = await axios.get(EXPRESS_URL + '/destination')
-    console.log(res.data)
     setItems(res.data)
   }
   function goToReviews(destinationId) { //리뷰 페이지
@@ -131,7 +130,6 @@ function TravelDestinationTable() {
           <MenuItem value="">정렬</MenuItem>
           <MenuItem value="option1">최신순</MenuItem>
           <MenuItem value="option2">평점순</MenuItem>
-          {/* Add more MenuItems as needed */}
         </Select>
       </Box>
       <TableContainer sx={{ maxHeight: 545 }}>
@@ -160,7 +158,7 @@ function TravelDestinationTable() {
                 { 
                   destination.image == '' 
                   ? <TableCell/>
-                  : <TableCell><img src={process.env.PUBLIC_URL + `/images/destination/${destination.image}.jpg`} alt='이미지'/></TableCell>
+                  : <TableCell><img src={process.env.PUBLIC_URL + `/images/${destination.name}.jpg`} alt='이미지'/></TableCell>
                 }
                 <TableCell>
                   <Button color="primary" onClick={(event) => handleUpdateClick(event,destination.destination_id)}>수정</Button>

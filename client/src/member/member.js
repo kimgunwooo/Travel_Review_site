@@ -116,7 +116,7 @@ function MemberList() {
                 { 
                   member.profile_image == '' 
                   ? <TableCell/>
-                  : <TableCell><img src={process.env.PUBLIC_URL + `/images/member/${member.profile_image}.jpg`} alt='이미지'/></TableCell>
+                  : <TableCell><img src={process.env.PUBLIC_URL + `/images/${member.name}.jpg`} alt='이미지'/></TableCell>
                 }
                 <TableCell>
                   <Button color="primary" onClick={(event) => handleUpdateClick(event,member.member_id)}>수정</Button>

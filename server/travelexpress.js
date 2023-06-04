@@ -2,11 +2,13 @@ import express from "express"
 import mysql from "mysql"
 import bp from "body-parser"
 import cors from "cors"
+import multer from 'multer';
 
 import dbconf from "./conf/auth.js"
 
 const app = express()
 const port = 3010
+
 
 // DB 연결 - 연결 정보는 auth.js에 저장(보안)
 const db = mysql.createConnection(dbconf)
@@ -16,10 +18,19 @@ app.use(bp.json())
 app.use(cors())
 app.use(express.urlencoded({ extended: true })); // URL 인코딩된 데이터를 읽을 수 있도록 미들웨어 추가
 
-//서버 연결 확인
-app.get('/', (req, res) => {
-  res.json({result: "success"})
-})
+// <- URL을 사용한 이미지 저장
+// 파일 업로드를 위한 Multer 설정
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, '/workspace/Travel_Review_site/client/public/images');
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  }
+});
+const upload = multer({ storage });
+
+
 
 //모든 여행지 목록 + 평균 평점
 app.get('/destination', (req, res) => { 
@@ -52,25 +63,81 @@ app.get('/destination/:id',(req,res)=>{
 	})
 })
 
-//여행지 추가
+// 여행지 추가
 app.post('/destination', (req, res) => {
-	const sql = 'insert into travel_destination (name, country, region, description, image) values (?)'
-	const destination = [
-		req.body.name,
-		req.body.country,
-		req.body.region,
-		req.body.description,
-    req.body.image
-	]
+  upload.single('image')(req, res, (err) => {
+    if (err) {
+      console.error(err);
+      console.log("여기");
+      res.status(500).json({ error: 'Internal Server Error' });
+      return;
+    }
 
-  db.query(sql, [ destination ], (err, rows) => {
-		if (err) {
-			res.json({result: "error"})
-			return console.log(err)
-		}
-		res.json({result: "success"})
-	})
-})
+    const { name, country, region, description } = req.body;
+    const image = req.file ? req.file.filename : null;
+    console.log(image);
+    const sql = 'INSERT INTO travel_destination (name, country, region, description, image) VALUES (?, ?, ?, ?, ?)';
+    const params = [name, country, region, description, image];
+    
+    
+    db.query(sql, params, (err, result) => {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+        return;
+      }
+
+      res.json({ success: true });
+    });
+  });
+});
+
+//멤버 추가
+app.post('/member', (req, res) => {
+  upload.single('image')(req, res, (err) => {
+    const name = req.body.name;
+    const email = req.body.email;
+    const image = req.file ? req.file.filename : null;
+    
+    //이름 존재 여부, 중복 체크
+    const checkNameQuery = 'SELECT * FROM member_info WHERE name = ?';
+    db.query(checkNameQuery, [name], (err, nameRows) => {
+      if (err) {
+        console.error(err);
+        return res.json({ result: 'error' });
+      }
+
+      if (nameRows.length > 0) {
+        return res.json({ result: 'error', message: 'Member name already exists' });
+      }
+
+      //이메일 존재 여부, 중복 체크
+      const checkEmailQuery = 'SELECT * FROM member_info WHERE email = ?';
+      db.query(checkEmailQuery, [email], (err, emailRows) => {
+        if (err) {
+          console.error(err);
+          return res.json({ result: 'error' });
+        }
+
+        if (emailRows.length > 0) {
+          return res.json({ result: 'error', message: 'Email already exists' });
+        }
+
+        const insertQuery = 'INSERT INTO member_info (name, email, age, profile_image) VALUES (?, ?, ?, ?)';
+        const member = [name, email, req.body.age, image];
+
+        db.query(insertQuery, member, (err, rows) => {
+          if (err) {
+            console.error(err);
+            return res.json({ result: 'error' });
+          }
+
+          res.json({ result: 'success' });
+        });
+      });
+    });
+  });
+});
 
 //여행지 수정
 app.put('/destination/:id', (req, res) => {
@@ -152,7 +219,7 @@ app.get('/destination/:id/review',(req,res)=>{
 // 해당 여행지의 리뷰 추가
 app.post('/destination/:id/review', (req, res) => {
   const id = parseInt(req.params.id);
-  const { email, rating, body } = req.body;
+  const { email, rating, review_content } = req.body;
 
   console.log(req.body);
   console.log(email);
@@ -174,7 +241,7 @@ app.post('/destination/:id/review', (req, res) => {
     // 리뷰 테이블에 새로운 레코드 추가
     const insertReviewQuery =
       'INSERT INTO review (destination_id, writer_id, rating, review_content) VALUES (?, ?, ?, ?)';
-    const reviewValues = [id, writerId, rating, body];
+    const reviewValues = [id, writerId, rating, review_content];
     db.query(insertReviewQuery, reviewValues, (err, result) => {
       if (err) {
         res.json({ result: 'error' });
@@ -246,49 +313,7 @@ app.get('/member', (req, res) => {
 	})
 })
 
-//멤버 추가
-app.post('/member', (req, res) => {
-  const name = req.body.name;
-  const email = req.body.email;
-  
-  //이름 존재 여부, 중복 체크
-  const checkNameQuery = 'SELECT * FROM member_info WHERE name = ?';
-  db.query(checkNameQuery, [name], (err, nameRows) => {
-    if (err) {
-      console.error(err);
-      return res.json({ result: 'error' });
-    }
 
-    if (nameRows.length > 0) {
-      return res.json({ result: 'error', message: 'Member name already exists' });
-    }
-    
-    //이메일 존재 여부, 중복 체크
-    const checkEmailQuery = 'SELECT * FROM member_info WHERE email = ?';
-    db.query(checkEmailQuery, [email], (err, emailRows) => {
-      if (err) {
-        console.error(err);
-        return res.json({ result: 'error' });
-      }
-
-      if (emailRows.length > 0) {
-        return res.json({ result: 'error', message: 'Email already exists' });
-      }
-
-      const insertQuery = 'INSERT INTO member_info (name, email, age, profile_image) VALUES (?, ?, ?, ?)';
-      const member = [name, email, req.body.age, req.body.profile_image];
-
-      db.query(insertQuery, member, (err, rows) => {
-        if (err) {
-          console.error(err);
-          return res.json({ result: 'error' });
-        }
-
-        res.json({ result: 'success' });
-      });
-    });
-  });
-});
 
 //멤버 수정
 app.put('/member/:id', (req, res) => {

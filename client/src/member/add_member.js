@@ -17,8 +17,23 @@ function AddMember() {
   const [profileImage, setProfileImage] = useState('');
   const [showAlert, setShowAlert] = useState(false);
   const navigate = useNavigate();
+  
+  function changeImageName(e) {
+    const file = e.target.files[0];
+    const filenameParts = file.name.split('.');
+    const extension = filenameParts[filenameParts.length - 1];
+    const modifiedFile = new File([file], name + '.' + extension, { type: 'image/' + extension });
+    console.log()
+    setProfileImage(modifiedFile);
+  }
 
   async function addMember() {
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('email', email);
+    formData.append('age', age);
+    formData.append('image',profileImage)
+    console.log("profileImage :",profileImage)
     const writerResponse = await axios.get(`${EXPRESS_URL}/member/${name}`);
     console.log(writerResponse.data)
     if (writerResponse.data.length > 0){
@@ -26,11 +41,10 @@ function AddMember() {
       return;
     }
     try {
-      const res = await axios.post(EXPRESS_URL + '/member', {
-        name,
-        email,
-        age,
-        profile_image: profileImage
+      const res = await axios.post(EXPRESS_URL + '/member', formData,{
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
       });
       console.log(res.data);
       navigate(`/member`);
@@ -69,13 +83,8 @@ function AddMember() {
           value={age}
           onChange={(e) => setAge(e.target.value)}
         />
-        <TextField
-          fullWidth
-          label="프로필 이미지"
-          variant="outlined"
-          value={profileImage}
-          onChange={(e) => setProfileImage(e.target.value)}
-        />
+        <input type="file" onChange={e => changeImageName(e)} />
+        
         <Button variant="contained" onClick={addMember}>
           추가
         </Button>

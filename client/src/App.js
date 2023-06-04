@@ -10,13 +10,15 @@ import MemberList from './member/member'
 import EditMember from './member/edit_member'
 import EditReview from './review/edit_review'
 
-import { BrowserRouter, Routes,Route } from 'react-router-dom';
+import { BrowserRouter, Routes,Route, Link } from 'react-router-dom';
 
 const App = () => {
   return (
     <BrowserRouter>
       <div>
-        <h1>Before The Trip</h1>
+        <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+          <h1>Before The Trip</h1>
+        </Link>
         <Routes>
           <Route exact path="/" element={<Main/>} />
           <Route exact path="/destination" element={<TravelDestinationTable/>} />
